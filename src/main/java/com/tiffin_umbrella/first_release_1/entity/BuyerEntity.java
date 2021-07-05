@@ -1,5 +1,6 @@
 package com.tiffin_umbrella.first_release_1.entity;
 import lombok.*;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -9,6 +10,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Builder
 @Data
 public class BuyerEntity{
+     @Id
+     private String id;
      String firstName;
      String lastName;
      Contact_User contact;

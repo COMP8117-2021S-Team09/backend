@@ -34,7 +34,7 @@ public class BuyerController {
         buyerEntity.setLastName(buyer.getLastName());
         buyerEntity.setContact(buyer.getContact());
         BuyerEntity saved_buyer = buyerRepository.save(buyerEntity);
-        SellerEntity saved_seller  = sellerRepository.findById(buyer.getSeller_id()).get();
+        SellerEntity saved_seller = sellerRepository.findById(buyer.getSeller_id()).get();
         Plan saved_plan = planRepository.findById(buyer.getPlan_id()).get();
         Order order =new Order();
         order.setBuyerEntity(saved_buyer);
