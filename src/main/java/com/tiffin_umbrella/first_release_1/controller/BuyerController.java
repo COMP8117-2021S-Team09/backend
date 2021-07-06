@@ -43,8 +43,6 @@ public class BuyerController {
         Order saved_order = orderRepository.save(order);
         saved_buyer.setOrder_id(saved_order);
         buyerRepository.save(saved_buyer);
-        saved_seller.setOrder(saved_order);
-        sellerRepository.save(saved_seller);
         mailSenderService.send_Register_Email(buyerEntity.getContact().getEmail());
         mailSenderService.send_Summary_Email(buyerEntity.getContact().getEmail(),this.getSummary(saved_buyer,saved_seller,saved_plan));
     }

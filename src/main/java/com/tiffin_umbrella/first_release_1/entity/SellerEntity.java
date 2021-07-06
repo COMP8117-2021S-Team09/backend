@@ -47,6 +47,4 @@ public class SellerEntity {
     private List<Review>reviews;
     @Field(value="audits")
     private List<Audit>audits;
-    @DBRef
-    private Order order;
 }
