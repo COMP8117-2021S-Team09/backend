@@ -15,36 +15,27 @@ import java.util.stream.Collectors;
 public class SellerController {
     @Autowired
     SellerRepository sellerRepository;
-    @Autowired
-    PlanRepository planRepository;
-    @Autowired
-    MailSenderService mailSenderService;
+    
     @GetMapping("/get_seller_list")
     public List<SellerEntity> get_sellers() {
         return sellerRepository.findAll();
     }
 
-    @PostMapping("/get_seller_list")
-    public List<SellerEntity> get_sellers(@RequestBody final SellerEntity filters) {
-        Collection<SellerEntity> sellers = sellerRepository.findAll();
-        final Status filterStatus = filters.getStatus();
-        final Set<Cuisines> filterCuisines = filters.getCuisines();
-        final Set<Categories> filterCategories = filters.getCategories();
-        return sellers.stream().filter(seller -> (filterStatus == null || seller.getStatus().equals(filterStatus))
-                && (filterCuisines == null || seller.getCuisines().containsAll(filterCuisines))
-                && (filterCategories == null || seller.getCategories().containsAll(filterCategories)))
-                .collect(Collectors.toList());
-    }
+
     @PostMapping("/post_seller")
-    public void post_seller(@RequestBody SellerEntity sellerEntity) {
-        planRepository.saveAll(sellerEntity.getPlans());
-        sellerRepository.save(sellerEntity);
-        mailSenderService.send_Register_Email(sellerEntity.getContact().getEmail());
+    public String post_seller(@RequestBody SellerEntity seller) {
+        final Contact contact = seller.getContact();
+    	final String email = contact.getEmail();
+    	final String password = seller.getPassword();
+    	
+    	SellerEntity s =  sellerRepository.findByContact_Email(email);
+    	final String actualPassword = s.getPassword();
+    	
+    	if (password.equals(actualPassword)) {
+    		return "Password matched";
+    	}
+    	
+    	return "Password didnt match";
     }
-    @GetMapping("/get_plans")
-    public List<Plan> get_plans(@RequestParam(value = "id") String id) {
-        SellerEntity seller = sellerRepository.findById(id).get();
-        List<Plan> plans = seller.getPlans();
-        return plans;
-    }
+
 }
