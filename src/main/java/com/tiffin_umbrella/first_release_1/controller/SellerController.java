@@ -31,11 +31,16 @@ public class SellerController {
     	SellerEntity s =  sellerRepository.findByContact_Email(email);
     	final String actualPassword = s.getPassword();
     	
-    	if (password.equals(actualPassword)) {
-    		return "Password matched";
-    	}
-    	
-    	return "Password didnt match";
+    	if (s != null){
+            if(password.equals(actualPassword)){
+                return "matched";
+            }
+            else{
+            return "not matched";
+            }
+        }
+        else{
+            return "user not found!";
+        }
     }
-
 }
