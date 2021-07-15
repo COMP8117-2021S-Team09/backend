@@ -12,5 +12,5 @@ public class Buyer {
     String lastName;
     Contact_User contact;
     String seller_id;
-    String plan_id;
+    String plan;
 }

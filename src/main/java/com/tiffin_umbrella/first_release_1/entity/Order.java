@@ -4,6 +4,7 @@ import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 @Document(value="order")
 @AllArgsConstructor
@@ -16,9 +17,9 @@ public class Order {
     @Id
     private String id;
     @DBRef
-    SellerEntity seller_id;
+    SellerEntity seller;
     @DBRef
-    BuyerEntity buyer_id;
+    BuyerEntity buyer;
     @DBRef
-    Plan plan_id;
+    Plan plan;
 }
