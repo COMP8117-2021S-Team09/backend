@@ -16,9 +16,9 @@ public class Order {
     @Id
     private String id;
     @DBRef
-    SellerEntity seller_id;
+    SellerEntity seller;
     @DBRef
-    BuyerEntity buyer_id;
+    BuyerEntity buyer;
     @DBRef
-    Plan plan_id;
+    Plan plan;
 }

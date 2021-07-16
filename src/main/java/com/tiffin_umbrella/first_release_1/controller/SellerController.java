@@ -1,6 +1,7 @@
 package com.tiffin_umbrella.first_release_1.controller;
 
 import com.tiffin_umbrella.first_release_1.entity.*;
+import com.tiffin_umbrella.first_release_1.repository.OrderRepository;
 import com.tiffin_umbrella.first_release_1.repository.PlanRepository;
 import com.tiffin_umbrella.first_release_1.repository.SellerRepository;
 import com.tiffin_umbrella.first_release_1.service.MailSenderService;
@@ -22,11 +23,18 @@ public class SellerController {
     @Autowired
     PlanRepository planRepository;
     @Autowired
+    OrderRepository orderRepository;
+    @Autowired
     MailSenderService mailSenderService;
 
     @GetMapping("/get_seller_list")
     public List<SellerEntity> get_sellers() {
         return sellerRepository.findAll();
+    }
+
+    @GetMapping(value = "/sellers/{sellerId}/orders", produces = APPLICATION_JSON_VALUE)
+   	public Collection<Order> getOrdersForSeller(@PathVariable(name = "sellerId") final String sellerId){
+    	return orderRepository.findBySeller_Id(sellerId);
     }
 
     @PostMapping("/get_seller_list")
