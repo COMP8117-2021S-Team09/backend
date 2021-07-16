@@ -35,13 +35,12 @@ public class BuyerController {
         buyerEntity.setContact(buyer.getContact());
         BuyerEntity saved_buyer = buyerRepository.save(buyerEntity);
         SellerEntity saved_seller = sellerRepository.findById(buyer.getSeller_id()).get();
-        Plan saved_plan = planRepository.findById(buyer.getPlan()).get();
+        Plan saved_plan = planRepository.findById(buyer.getPlan_id()).get();
         Order order =new Order();
         order.setBuyer(saved_buyer);
         order.setSeller(saved_seller);
         order.setPlan(saved_plan);
         Order saved_order = orderRepository.save(order);
-        //saved_buyer.setOrder_id(saved_order);
         buyerRepository.save(saved_buyer);
         mailSenderService.send_Register_Email(buyerEntity.getContact().getEmail());
         mailSenderService.send_Summary_Email(buyerEntity.getContact().getEmail(),this.getSummary(saved_buyer,saved_seller,saved_plan));
