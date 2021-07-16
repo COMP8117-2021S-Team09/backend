@@ -5,7 +5,11 @@ import com.tiffin_umbrella.first_release_1.repository.PlanRepository;
 import com.tiffin_umbrella.first_release_1.repository.SellerRepository;
 import com.tiffin_umbrella.first_release_1.service.MailSenderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -19,6 +23,7 @@ public class SellerController {
     PlanRepository planRepository;
     @Autowired
     MailSenderService mailSenderService;
+
     @GetMapping("/get_seller_list")
     public List<SellerEntity> get_sellers() {
         return sellerRepository.findAll();
@@ -35,16 +40,33 @@ public class SellerController {
                 && (filterCategories == null || seller.getCategories().containsAll(filterCategories)))
                 .collect(Collectors.toList());
     }
+
     @PostMapping("/post_seller")
     public void post_seller(@RequestBody SellerEntity sellerEntity) {
         planRepository.saveAll(sellerEntity.getPlans());
         sellerRepository.save(sellerEntity);
         mailSenderService.send_Register_Email(sellerEntity.getContact().getEmail());
     }
+
     @GetMapping("/get_plans")
     public List<Plan> get_plans(@RequestParam(value = "id") String id) {
         SellerEntity seller = sellerRepository.findById(id).get();
         List<Plan> plans = seller.getPlans();
         return plans;
+    }
+
+    @PostMapping(value = "/sellers/{sellerId}/plans",
+            consumes = APPLICATION_JSON_VALUE,
+            produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<Plan> createPlan(@PathVariable(name = "sellerId") final String sellerId,
+                                           @RequestBody final Plan plan) {
+        sellerRepository.findById(sellerId).ifPresent(seller -> {
+            plan.setId(null);
+            plan.setStatus(PlanStatus.AVAILABLE);
+            planRepository.save(plan);
+            seller.getPlans().add(plan);
+            sellerRepository.save(seller);
+        });
+        return new ResponseEntity<>(plan, HttpStatus.OK);
     }
 }
