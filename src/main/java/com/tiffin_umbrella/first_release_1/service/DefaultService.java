@@ -23,16 +23,9 @@ public class DefaultService {
     private final BuyerRepository buyerRepository;
 
     public HttpStatus login(final LoginDetailsDto loginDetails) {
-        String password;
+        final String actualPassword = getPassword(loginDetails);
         HttpStatus responseStatus = HttpStatus.OK;
-        if (Role.SELLER.equals(loginDetails.getRole())) {
-            password = sellerRepository.findByContact_Email(loginDetails.getEmail())
-                    .orElse(SellerEntity.builder().build()).getPassword();
-        } else {
-            password = buyerRepository.findByContact_Email(loginDetails.getEmail())
-                    .orElse(BuyerEntity.builder().build()).getFirstName();
-        }
-        if (!loginDetails.getPassword().equals(password)) {
+        if (!loginDetails.getPassword().equals(actualPassword)) {
             loginDetails.setMessage("Wrong credentials (email or password mismatch)");
             loginDetails.setToken(null);
             responseStatus = HttpStatus.BAD_REQUEST;
@@ -46,5 +39,17 @@ public class DefaultService {
     public void redirectToApiDocs(final HttpServletResponse response) {
         response.addHeader(HttpHeaders.LOCATION, "/swagger-ui.html");
         response.setStatus(HttpServletResponse.SC_TEMPORARY_REDIRECT);
+    }
+
+    private String getPassword(final LoginDetailsDto loginDetails) {
+        final String password;
+        if (Role.SELLER.equals(loginDetails.getRole())) {
+            password = sellerRepository.findByContact_Email(loginDetails.getEmail())
+                    .orElse(SellerEntity.builder().build()).getPassword();
+        } else {
+            password = buyerRepository.findByContact_Email(loginDetails.getEmail())
+                    .orElse(BuyerEntity.builder().build()).getFirstName();
+        }
+        return password;
     }
 }
