@@ -1,27 +1,30 @@
 package com.tiffin_umbrella.first_release_1.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
+@RequiredArgsConstructor(onConstructor = @__({@Autowired, @Lazy}))
 public class MailSenderService {
-    @Autowired
-    JavaMailSender javaMailSender;
-    public void send_Register_Email(String email){
-        SimpleMailMessage msg = new SimpleMailMessage();
-        msg.setTo(email);
-        msg.setSubject("Welcome to Tiffin Umbrella");
-        msg.setText("Registered Successfully");
-        javaMailSender.send(msg);
+
+    private final JavaMailSender javaMailSender;
+    private final SimpleMailMessage mailMessage = new SimpleMailMessage();
+
+    public void sendRegisterEmail(final String email) {
+        mailMessage.setTo(email);
+        mailMessage.setSubject("Welcome to Tiffin Umbrella");
+        mailMessage.setText("Registered Successfully");
+        javaMailSender.send(mailMessage);
     }
-    public void send_Summary_Email(String email, String content)
-    {
-        SimpleMailMessage msg = new SimpleMailMessage();
-        msg.setTo(email);
-        msg.setSubject("Order Recieved");
-        msg.setText(content);
-        javaMailSender.send(msg);
+
+    public void sendSummaryEmail(final String email, final String content) {
+        mailMessage.setTo(email);
+        mailMessage.setSubject("Order Received");
+        mailMessage.setText(content);
+        javaMailSender.send(mailMessage);
     }
 }

@@ -53,7 +53,7 @@ public class SellerController {
     public void post_seller(@RequestBody SellerEntity sellerEntity) {
         planRepository.saveAll(sellerEntity.getPlans());
         sellerRepository.save(sellerEntity);
-        mailSenderService.send_Register_Email(sellerEntity.getContact().getEmail());
+        mailSenderService.sendRegisterEmail(sellerEntity.getContact().getEmail());
     }
 
     @GetMapping("/get_plans")

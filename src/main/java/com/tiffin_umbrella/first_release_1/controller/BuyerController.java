@@ -42,8 +42,8 @@ public class BuyerController {
         order.setPlan(saved_plan);
         Order saved_order = orderRepository.save(order);
         buyerRepository.save(saved_buyer);
-        mailSenderService.send_Register_Email(buyerEntity.getContact().getEmail());
-        mailSenderService.send_Summary_Email(buyerEntity.getContact().getEmail(),this.getSummary(saved_buyer,saved_seller,saved_plan));
+        mailSenderService.sendRegisterEmail(buyerEntity.getContact().getEmail());
+        mailSenderService.sendSummaryEmail(buyerEntity.getContact().getEmail(),this.getSummary(saved_buyer,saved_seller,saved_plan));
     }
   public String getSummary(BuyerEntity buyer, SellerEntity seller, Plan plan) {
       String summary = "Hello " + buyer.getFirstName() + " " + buyer.getLastName() + "\n" +
