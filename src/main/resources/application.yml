@@ -1,0 +1,17 @@
+# spring data config
+spring.data.mongodb.uri: mongodb+srv://remote:remote@sandbox.ylew2.mongodb.net/tiffin_db
+
+# spring mail config
+spring.mail:
+  host: smtp.gmail.com
+  port: 587
+  username: tiffinumbrella@gmail.com
+  password: mqfeqbmkknnjuzeb
+  properties.mail.smtp:
+    auth: true
+    starttls.enable: true
+
+# server error config
+server.error:
+  include-message: ALWAYS
+  include-stacktrace: ALWAYS
