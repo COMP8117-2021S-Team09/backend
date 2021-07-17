@@ -3,7 +3,6 @@ package com.tiffin_umbrella.first_release_1.controller;
 import com.tiffin_umbrella.first_release_1.Presentation_Layer.LoginDetailsDto;
 import com.tiffin_umbrella.first_release_1.Presentation_Layer.Role;
 import com.tiffin_umbrella.first_release_1.entity.BuyerEntity;
-import com.tiffin_umbrella.first_release_1.entity.SellerEntity;
 import com.tiffin_umbrella.first_release_1.repository.BuyerRepository;
 import com.tiffin_umbrella.first_release_1.repository.SellerRepository;
 import io.swagger.v3.oas.annotations.Hidden;
@@ -17,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -40,22 +40,29 @@ public class DefaultController {
             consumes = APPLICATION_JSON_VALUE,
             produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<LoginDetailsDto> login(@RequestBody @Valid final LoginDetailsDto loginDetails) {
-        String password;
+        final AtomicReference<String> password = new AtomicReference<>();
+        final AtomicReference<String> loginId = new AtomicReference<>();
         HttpStatus responseStatus = HttpStatus.OK;
         if (Role.SELLER.equals(loginDetails.getRole())) {
-            password = sellerRepository.findByContact_Email(loginDetails.getEmail())
-                    .orElse(SellerEntity.builder().build()).getPassword();
+            sellerRepository.findByContact_Email(loginDetails.getEmail()).ifPresent(seller -> {
+                password.set(seller.getPassword());
+                loginId.set(seller.getId());
+            });
         } else {
-            password = buyerRepository.findByContact_Email(loginDetails.getEmail())
-                    .orElse(BuyerEntity.builder().build()).getFirstName();
+            buyerRepository.findByContact_Email(loginDetails.getEmail()).ifPresent(buyer -> {
+                password.set(buyer.getFirstName());
+                loginId.set(buyer.getId());
+            });
         }
-        if (!loginDetails.getPassword().equals(password)) {
+        if (!loginDetails.getPassword().equals(password.get())) {
             loginDetails.setMessage("Wrong credentials (email or password mismatch)");
             loginDetails.setToken(null);
+            loginDetails.setId(null);
             responseStatus = HttpStatus.BAD_REQUEST;
         } else {
             loginDetails.setMessage("Login successful (email and password valid)");
             loginDetails.setToken(UUID.randomUUID().toString());
+            loginDetails.setId(loginId.get());
         }
         return new ResponseEntity<>(loginDetails, responseStatus);
     }
