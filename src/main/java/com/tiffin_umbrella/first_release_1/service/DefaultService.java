@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Service
 @RequiredArgsConstructor(onConstructor = @__({@Autowired, @Lazy}))
@@ -28,6 +29,7 @@ public class DefaultService {
         if (!loginDetails.getPassword().equals(actualPassword)) {
             loginDetails.setMessage("Wrong credentials (email or password mismatch)");
             loginDetails.setToken(null);
+            loginDetails.setId(null);
             responseStatus = HttpStatus.BAD_REQUEST;
         } else {
             loginDetails.setMessage("Login successful (email and password valid)");
@@ -42,14 +44,18 @@ public class DefaultService {
     }
 
     private String getPassword(final LoginDetailsDto loginDetails) {
-        final String password;
+        final AtomicReference<String> password = new AtomicReference<>();
         if (Role.SELLER.equals(loginDetails.getRole())) {
-            password = sellerRepository.findByContact_Email(loginDetails.getEmail())
-                    .orElse(SellerEntity.builder().build()).getPassword();
+            sellerRepository.findByContact_Email(loginDetails.getEmail()).ifPresent(seller -> {
+                password.set(seller.getPassword());
+                loginDetails.setId(seller.getId());
+            });
         } else {
-            password = buyerRepository.findByContact_Email(loginDetails.getEmail())
-                    .orElse(BuyerEntity.builder().build()).getFirstName();
+            buyerRepository.findByContact_Email(loginDetails.getEmail()).ifPresent(buyer -> {
+                password.set(buyer.getFirstName());
+                loginDetails.setId(buyer.getId());
+            });
         }
-        return password;
+        return password.get();
     }
 }

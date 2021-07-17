@@ -11,6 +11,8 @@ import javax.validation.constraints.NotNull;
 @Data
 public class LoginDetailsDto {
 
+    private String id;
+
     @NotEmpty(message = "email missing")
     private String email;
 
