@@ -5,7 +5,10 @@ import com.tiffin_umbrella.first_release_1.repository.OrderRepository;
 import com.tiffin_umbrella.first_release_1.repository.PlanRepository;
 import com.tiffin_umbrella.first_release_1.repository.SellerRepository;
 import com.tiffin_umbrella.first_release_1.service.MailSenderService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,28 +20,36 @@ import java.util.stream.Collectors;
 
 @CrossOrigin
 @RestController
+@Slf4j
+@RequiredArgsConstructor(onConstructor = @__({@Autowired, @Lazy}))
 public class SellerController {
-    @Autowired
-    SellerRepository sellerRepository;
-    @Autowired
-    PlanRepository planRepository;
-    @Autowired
-    OrderRepository orderRepository;
-    @Autowired
-    MailSenderService mailSenderService;
 
-    @GetMapping("/get_seller_list")
-    public List<SellerEntity> get_sellers() {
+    private final SellerRepository sellerRepository;
+    private final PlanRepository planRepository;
+    private final OrderRepository orderRepository;
+    private final MailSenderService mailSenderService;
+
+    @GetMapping(
+            value = "/get_seller_list",
+            produces = APPLICATION_JSON_VALUE)
+    public Collection<SellerEntity> getAllSellers() {
         return sellerRepository.findAll();
     }
 
-    @GetMapping(value = "/sellers/{sellerId}/orders", produces = APPLICATION_JSON_VALUE)
-   	public Collection<Order> getOrdersForSeller(@PathVariable(name = "sellerId") final String sellerId){
-    	return orderRepository.findBySeller_Id(sellerId);
+    @GetMapping(
+            value = "/sellers/{sellerId}/orders",
+            produces = APPLICATION_JSON_VALUE)
+    public Collection<Order> getOrdersForSeller(
+            @PathVariable(name = "sellerId") final String sellerId) {
+        return orderRepository.findBySeller_Id(sellerId);
     }
 
-    @PostMapping("/get_seller_list")
-    public List<SellerEntity> get_sellers(@RequestBody final SellerEntity filters) {
+    @PostMapping(
+            value = "/get_seller_list",
+            consumes = APPLICATION_JSON_VALUE,
+            produces = APPLICATION_JSON_VALUE)
+    public List<SellerEntity> get_sellers(
+            @RequestBody final SellerEntity filters) {
         Collection<SellerEntity> sellers = sellerRepository.findAll();
         final Status filterStatus = filters.getStatus();
         final Set<Cuisines> filterCuisines = filters.getCuisines();
@@ -49,18 +60,23 @@ public class SellerController {
                 .collect(Collectors.toList());
     }
 
-    @PostMapping("/post_seller")
+    @PostMapping(
+            value = "/post_seller",
+            consumes = APPLICATION_JSON_VALUE,
+            produces = APPLICATION_JSON_VALUE)
     public void post_seller(@RequestBody SellerEntity sellerEntity) {
         planRepository.saveAll(sellerEntity.getPlans());
         sellerRepository.save(sellerEntity);
         mailSenderService.sendRegisterEmail(sellerEntity.getContact().getEmail());
     }
 
-    @GetMapping("/get_plans")
-    public List<Plan> get_plans(@RequestParam(value = "id") String id) {
-        SellerEntity seller = sellerRepository.findById(id).get();
-        List<Plan> plans = seller.getPlans();
-        return plans;
+    @GetMapping(
+            value = "/get_plans",
+            produces = APPLICATION_JSON_VALUE)
+    public List<Plan> getSellerPlans(@RequestParam(value = "id") String id) {
+        return sellerRepository.findById(id)
+                .orElse(SellerEntity.builder().plans(Collections.emptyList()).build())
+                .getPlans();
     }
 
     @PostMapping(value = "/sellers/{sellerId}/plans",
