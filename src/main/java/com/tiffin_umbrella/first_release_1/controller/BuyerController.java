@@ -1,5 +1,5 @@
 package com.tiffin_umbrella.first_release_1.controller;
-import com.tiffin_umbrella.first_release_1.Presentation_Layer.Buyer;
+import com.tiffin_umbrella.first_release_1.dto.Buyer;
 import com.tiffin_umbrella.first_release_1.entity.BuyerEntity;
 import com.tiffin_umbrella.first_release_1.entity.Order;
 import com.tiffin_umbrella.first_release_1.entity.Plan;

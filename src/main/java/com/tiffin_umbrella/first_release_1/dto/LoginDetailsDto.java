@@ -1,4 +1,4 @@
-package com.tiffin_umbrella.first_release_1.Presentation_Layer;
+package com.tiffin_umbrella.first_release_1.dto;
 
 import lombok.*;
 

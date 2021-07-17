@@ -1,7 +1,7 @@
 package com.tiffin_umbrella.first_release_1.controller;
 
-import com.tiffin_umbrella.first_release_1.Presentation_Layer.LoginDetailsDto;
-import com.tiffin_umbrella.first_release_1.Presentation_Layer.Role;
+import com.tiffin_umbrella.first_release_1.dto.LoginDetailsDto;
+import com.tiffin_umbrella.first_release_1.dto.Role;
 import com.tiffin_umbrella.first_release_1.entity.BuyerEntity;
 import com.tiffin_umbrella.first_release_1.entity.SellerEntity;
 import com.tiffin_umbrella.first_release_1.repository.BuyerRepository;

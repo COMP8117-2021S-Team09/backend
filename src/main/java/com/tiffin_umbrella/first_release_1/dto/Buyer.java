@@ -1,5 +1,4 @@
-package com.tiffin_umbrella.first_release_1.Presentation_Layer;
-import com.tiffin_umbrella.first_release_1.entity.Contact;
+package com.tiffin_umbrella.first_release_1.dto;
 import com.tiffin_umbrella.first_release_1.entity.Contact_User;
 import lombok.*;
 @AllArgsConstructor
