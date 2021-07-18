@@ -1,15 +1,15 @@
 package com.tiffin_umbrella.first_release_1.entity;
 
 import lombok.*;
-import org.springframework.data.mongodb.core.mapping.Field;
-import org.springframework.data.mongodb.core.mapping.FieldType;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @ToString
 @Data
-public class Address {
+@Document("address")
+public class AddressEntity {
     Double latitude;
     Double longitude;
     String line1;

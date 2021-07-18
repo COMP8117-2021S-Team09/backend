@@ -1,8 +1,11 @@
 package com.tiffin_umbrella.first_release_1.entity;
 
 import lombok.*;
+import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.data.mongodb.core.mapping.FieldType;
+
+import java.time.Instant;
 import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
@@ -10,10 +13,11 @@ import java.util.Date;
 @Getter
 @Setter
 @ToString
-public class Vaccine {
+@Document("vaccine")
+public class VaccineEntity {
     String dose1Url;
-    Date dose1Date;
+    Instant dose1Date;
     String dose2Url;
-    Date dose2Date;
+    Instant dose2Date;
 }
 

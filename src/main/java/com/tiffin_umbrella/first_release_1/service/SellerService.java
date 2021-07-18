@@ -7,9 +7,6 @@ import com.tiffin_umbrella.first_release_1.repository.SellerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.data.mongodb.repository.MongoRepository;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -28,7 +25,7 @@ public class SellerService {
         return sellerRepository.findAll();
     }
 
-    public Collection<Order> getOrdersForSeller(final String sellerId) {
+    public Collection<OrderEntity> getOrdersForSeller(final String sellerId) {
         return orderRepository.findBySeller_Id(sellerId);
     }
 
@@ -49,13 +46,13 @@ public class SellerService {
         mailSenderService.sendRegisterEmail(sellerEntity.getContact().getEmail());
     }
 
-    public Collection<Plan> getSellerPlans(final String sellerId) {
+    public Collection<PlanEntity> getSellerPlans(final String sellerId) {
         return sellerRepository.findById(sellerId)
                 .orElse(SellerEntity.builder().plans(Collections.emptyList()).build())
                 .getPlans();
     }
 
-    public void createSellerPlan(final String sellerId, final Plan plan) {
+    public void createSellerPlan(final String sellerId, final PlanEntity plan) {
         sellerRepository.findById(sellerId).ifPresent(seller -> {
             plan.setId(null);
             plan.setStatus(PlanStatus.AVAILABLE);

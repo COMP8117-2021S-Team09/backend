@@ -2,11 +2,7 @@ package com.tiffin_umbrella.first_release_1.adapter;
 
 import com.tiffin_umbrella.first_release_1.common.ErrorMessage;
 import com.tiffin_umbrella.first_release_1.dto.OrderDto;
-import com.tiffin_umbrella.first_release_1.dto.PlanDto;
-import com.tiffin_umbrella.first_release_1.entity.Order;
-import com.tiffin_umbrella.first_release_1.entity.Plan;
-import com.tiffin_umbrella.first_release_1.entity.PlanStatus;
-import com.tiffin_umbrella.first_release_1.entity.PlanType;
+import com.tiffin_umbrella.first_release_1.entity.OrderEntity;
 import lombok.NoArgsConstructor;
 import org.springframework.util.Assert;
 
@@ -20,19 +16,13 @@ import static lombok.AccessLevel.PRIVATE;
 @NoArgsConstructor(access = PRIVATE)
 public class OrderAdapter {
 
-    public static Order adaptForCreation(final OrderDto dto) {
-        Assert.notNull(dto, ErrorMessage.VALIDATION_INVALID_INPUT_EMPTY);
-        return Order.builder()
-                .build();
-    }
-
-    public static Collection<OrderDto> adaptCollection(Collection<Order> entities) {
+    public static Collection<OrderDto> adaptCollection(Collection<OrderEntity> entities) {
         return Optional.ofNullable(entities).orElse(Collections.emptyList()).stream()
                 .map(OrderAdapter::adaptToDto)
                 .collect(Collectors.toList());
     }
 
-    public static OrderDto adaptToDto(final Order entity) {
+    public static OrderDto adaptToDto(final OrderEntity entity) {
         Assert.notNull(entity, ErrorMessage.VALIDATION_INVALID_INPUT_EMPTY);
         return OrderDto.builder()
                 .id(entity.getId())

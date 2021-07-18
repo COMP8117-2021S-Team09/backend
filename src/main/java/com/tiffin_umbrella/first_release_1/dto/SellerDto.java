@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.data.mongodb.core.mapping.FieldType;
 
 import javax.validation.constraints.NotEmpty;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -32,11 +33,11 @@ public class SellerDto {
     private Set<Cuisines> cuisines;
     private Set<PaymentMethods> paymentMethodsAvailable;
 
-    private List<PlanDto> plans;
+    private Collection<PlanDto> plans;
     private ContactDto contact;
     private String password;
     private String otp;
     private VaccineDto vaccine;
-    private List<ReviewDto> reviews;
-    private List<AuditDto> audits;
+    private Collection<ReviewDto> reviews;
+    private Collection<AuditDto> audits;
 }

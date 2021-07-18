@@ -12,17 +12,17 @@ import static lombok.AccessLevel.PRIVATE;
 @NoArgsConstructor(access = PRIVATE)
 public class ContactAdapter {
 
-    public static Contact adaptForCreation(final ContactDto dto) {
-        return Contact.builder()
+    public static ContactEntity adaptForCreation(final ContactDto dto) {
+        return ContactEntity.builder()
                 .email(dto.getEmail())
                 .phone(dto.getPhone())
                 .address(adaptAddress(dto.getAddress()))
                 .build();
     }
 
-    public static ContactDto adaptContact(final Contact toBeAdapted) {
-        final Contact contact = Optional.ofNullable(toBeAdapted)
-                .orElse(Contact.builder().build());
+    public static ContactDto adaptContact(final ContactEntity toBeAdapted) {
+        final ContactEntity contact = Optional.ofNullable(toBeAdapted)
+                .orElse(ContactEntity.builder().build());
         return ContactDto.builder()
                 .email(contact.getEmail())
                 .phone(contact.getPhone())
@@ -30,9 +30,9 @@ public class ContactAdapter {
                 .build();
     }
 
-    private static AddressDto adaptAddress(final Address toBeAdapted) {
-        final Address address = Optional.ofNullable(toBeAdapted)
-                .orElse(Address.builder().build());
+    private static AddressDto adaptAddress(final AddressEntity toBeAdapted) {
+        final AddressEntity address = Optional.ofNullable(toBeAdapted)
+                .orElse(AddressEntity.builder().build());
         return AddressDto.builder()
                 .latitude(address.getLatitude())
                 .longitude(address.getLongitude())
@@ -45,8 +45,8 @@ public class ContactAdapter {
                 .build();
     }
 
-    private static Address adaptAddress(final AddressDto dto) {
-        return Address.builder()
+    private static AddressEntity adaptAddress(final AddressDto dto) {
+        return AddressEntity.builder()
                 .latitude(dto.getLatitude())
                 .longitude(dto.getLongitude())
                 .line1(dto.getLine1())

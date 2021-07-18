@@ -32,19 +32,19 @@ public class SellerEntity {
     @Field(value="cuisines")
     private Set<Cuisines> cuisines;
     @DBRef
-    private List<Plan>plans;
+    private List<PlanEntity>plans;
     @Field(value="paymentsMethods")
     private Set<PaymentMethods>paymentMethodsAvailable;
     @Field(value="contact")
-    private Contact contact;
+    private ContactEntity contact;
     @Field(value="password",targetType=FieldType.STRING)
     private String password;
     @Field(value="otp",targetType=FieldType.STRING)
     private String otp;
     @Field(value="vaccine")
-    private Vaccine vaccine;
+    private VaccineEntity vaccine;
     @Field(value="reviews")
-    private List<Review>reviews;
+    private List<ReviewEntity>reviews;
     @Field(value="audits")
-    private List<Audit>audits;
+    private List<AuditEntity>audits;
 }

@@ -5,8 +5,8 @@ import com.tiffin_umbrella.first_release_1.common.BadRequestException;
 import com.tiffin_umbrella.first_release_1.common.ErrorCode;
 import com.tiffin_umbrella.first_release_1.dto.BuyerDto;
 import com.tiffin_umbrella.first_release_1.entity.BuyerEntity;
-import com.tiffin_umbrella.first_release_1.entity.Order;
-import com.tiffin_umbrella.first_release_1.entity.Plan;
+import com.tiffin_umbrella.first_release_1.entity.OrderEntity;
+import com.tiffin_umbrella.first_release_1.entity.PlanEntity;
 import com.tiffin_umbrella.first_release_1.entity.SellerEntity;
 import com.tiffin_umbrella.first_release_1.repository.BuyerRepository;
 import com.tiffin_umbrella.first_release_1.repository.OrderRepository;
@@ -33,9 +33,9 @@ public class BuyerService {
         buyerRepository.save(existingBuyer);/* will save if not exists already */
         final SellerEntity existingSeller = sellerRepository.findById(buyer.getSeller_id())
                 .orElseThrow(() -> new BadRequestException(ErrorCode.SELLER_NOT_FOUND_BY_ID, buyer.getSeller_id()));
-        final Plan existingPlan = planRepository.findById(buyer.getPlan_id())
+        final PlanEntity existingPlan = planRepository.findById(buyer.getPlan_id())
                 .orElseThrow(() -> new BadRequestException(ErrorCode.PLAN_NOT_FOUND_BY_ID, buyer.getPlan_id()));
-        final Order order = Order.builder()
+        final OrderEntity order = OrderEntity.builder()
                 .buyer(existingBuyer)
                 .seller(existingSeller)
                 .plan(existingPlan).build();
@@ -45,7 +45,7 @@ public class BuyerService {
         mailSenderService.sendSummaryEmail(existingBuyer.getContact().getEmail(), summary);
     }
 
-    private String getSummary(final BuyerEntity buyer, final SellerEntity seller, final Plan plan) {
+    private String getSummary(final BuyerEntity buyer, final SellerEntity seller, final PlanEntity plan) {
         return "Hello " + buyer.getFirstName() + " " + buyer.getLastName() + "\n" +
                 "We have recieved your tiffin order \n" +
                 "Order Details\n" +
@@ -53,7 +53,7 @@ public class BuyerService {
                 "Plan Name: " + plan.getName() + "\n" +
                 "Plan Description" + plan.getDescription() + "\n" +
                 "Plan PlanType: " + plan.getType() + "\n" +
-                "Contact Seller at this number for further assistance : " +
+                "ContactEntity Seller at this number for further assistance : " +
                 seller.getContact().getPhone() + "\n" +
                 "Enjoy your meal" + "\n" +
                 "Thanks," + "\n" +

@@ -45,7 +45,7 @@ public class SellerController {
             produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<OrderDto>> getOrdersForSeller(
             @PathVariable(name = "sellerId") final String sellerId) {
-        final Collection<Order> orders = sellerService.getOrdersForSeller(sellerId);
+        final Collection<OrderEntity> orders = sellerService.getOrdersForSeller(sellerId);
         return new ResponseEntity<>(OrderAdapter.adaptCollection(orders), HttpStatus.OK);
     }
 
@@ -54,8 +54,9 @@ public class SellerController {
             consumes = APPLICATION_JSON_VALUE,
             produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<SellerDto>> getSellersBasedOnFilters(
-            @RequestBody final SellerEntity filters) {
-        final Collection<SellerEntity> sellers = sellerService.getSellersBasedOnFilters(filters);
+            @RequestBody final SellerDto filters) {
+        final SellerEntity entityFilters = SellerAdapter.adaptForCreation(filters);
+        final Collection<SellerEntity> sellers = sellerService.getSellersBasedOnFilters(entityFilters);
         return new ResponseEntity<>(SellerAdapter.adaptCollection(sellers), HttpStatus.OK);
     }
 
@@ -75,7 +76,7 @@ public class SellerController {
             produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<PlanDto>> getSellerPlans(
             @RequestParam(value = "id") String id) {//getPlans is same
-        final Collection<Plan> plans = sellerService.getSellerPlans(id);
+        final Collection<PlanEntity> plans = sellerService.getSellerPlans(id);
         return new ResponseEntity<>(PlanAdapter.adaptCollection(plans), HttpStatus.OK);
     }
 
@@ -84,7 +85,7 @@ public class SellerController {
             produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<PlanDto>> getPlans(
             @PathVariable(name = "sellerId") final String sellerId) {//getSellerPlans is same
-        final Collection<Plan> plans = sellerService.getSellerPlans(sellerId);
+        final Collection<PlanEntity> plans = sellerService.getSellerPlans(sellerId);
         return new ResponseEntity<>(PlanAdapter.adaptCollection(plans), HttpStatus.OK);
     }
 
@@ -94,7 +95,7 @@ public class SellerController {
     public ResponseEntity<PlanDto> createPlan(
             @PathVariable(name = "sellerId") final String sellerId,
             @RequestBody @Valid final PlanDto plan) {
-        final Plan planCreated = adaptForCreation(plan);
+        final PlanEntity planCreated = adaptForCreation(plan);
         sellerService.createSellerPlan(sellerId, planCreated);
         return new ResponseEntity<>(adaptToDto(planCreated), HttpStatus.OK);
     }

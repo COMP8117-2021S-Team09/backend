@@ -6,13 +6,13 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.data.mongodb.core.mapping.FieldType;
 
+@Document(value="plan")
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Getter
 @Setter
-@Document
-public class Plan {
+public class PlanEntity {
     @Id
     String id;
     String name;

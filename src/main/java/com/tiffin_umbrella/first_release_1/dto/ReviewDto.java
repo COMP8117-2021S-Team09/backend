@@ -8,8 +8,8 @@ import lombok.*;
 @Data
 public class ReviewDto {
 
-    private String seller_id;
-    private String buyer_id;
-    private String plan_id;
+    private String sellerId;
+    private String buyerId;
+    private String planId;
     private String comments;
 }
