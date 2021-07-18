@@ -1,6 +1,6 @@
 package com.tiffin_umbrella.first_release_1.controller;
 
-import com.tiffin_umbrella.first_release_1.dto.Buyer;
+import com.tiffin_umbrella.first_release_1.dto.BuyerDto;
 import com.tiffin_umbrella.first_release_1.service.BuyerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +23,7 @@ public class BuyerController {
             value = {"/buyers", "/post_buyer"},
             consumes = APPLICATION_JSON_VALUE,
             produces = APPLICATION_JSON_VALUE)
-    public void createBuyer(@RequestBody final Buyer buyer) {
+    public void createBuyer(@RequestBody final BuyerDto buyer) {
         buyerService.createBuyer(buyer);
     }
 }

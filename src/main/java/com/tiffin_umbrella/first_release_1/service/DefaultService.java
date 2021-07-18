@@ -1,8 +1,7 @@
 package com.tiffin_umbrella.first_release_1.service;
 
 import com.tiffin_umbrella.first_release_1.dto.LoginDetailsDto;
-import com.tiffin_umbrella.first_release_1.dto.Role;
-import com.tiffin_umbrella.first_release_1.entity.*;
+import com.tiffin_umbrella.first_release_1.entity.Role;
 import com.tiffin_umbrella.first_release_1.repository.BuyerRepository;
 import com.tiffin_umbrella.first_release_1.repository.SellerRepository;
 import lombok.RequiredArgsConstructor;

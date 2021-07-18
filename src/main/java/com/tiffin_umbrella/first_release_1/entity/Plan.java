@@ -6,9 +6,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.data.mongodb.core.mapping.FieldType;
 
-import java.util.List;
-import java.util.Set;
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -21,9 +18,9 @@ public class Plan {
     String name;
     String description;
     Double price;
-    @Field(value="type",targetType = FieldType.STRING)
-    Type type;
-    @Field(value="status",targetType = FieldType.STRING)
+    @Field(value = "type", targetType = FieldType.STRING)
+    PlanType type;
+    @Field(value = "status", targetType = FieldType.STRING)
     PlanStatus status;
     String imageUrl;
     String videoUrl;

@@ -1,5 +1,11 @@
 package com.tiffin_umbrella.first_release_1.controller;
 
+import com.tiffin_umbrella.first_release_1.adapter.OrderAdapter;
+import com.tiffin_umbrella.first_release_1.adapter.PlanAdapter;
+import com.tiffin_umbrella.first_release_1.adapter.SellerAdapter;
+import com.tiffin_umbrella.first_release_1.dto.OrderDto;
+import com.tiffin_umbrella.first_release_1.dto.PlanDto;
+import com.tiffin_umbrella.first_release_1.dto.SellerDto;
 import com.tiffin_umbrella.first_release_1.entity.*;
 import com.tiffin_umbrella.first_release_1.service.SellerService;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +16,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
+import static com.tiffin_umbrella.first_release_1.adapter.PlanAdapter.adaptForCreation;
+import static com.tiffin_umbrella.first_release_1.adapter.PlanAdapter.adaptToDto;
+import static com.tiffin_umbrella.first_release_1.adapter.SellerAdapter.adaptCollection;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import java.util.*;
@@ -25,59 +36,66 @@ public class SellerController {
     @GetMapping(
             value = {"/sellers", "/get_seller_list"},
             produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<Collection<SellerEntity>> getAllSellers() {
-        return new ResponseEntity<>(sellerService.findAll(), HttpStatus.OK);
+    public ResponseEntity<Collection<SellerDto>> getAllSellers() {
+        return new ResponseEntity<>(adaptCollection(sellerService.findAll()), HttpStatus.OK);
     }
 
     @GetMapping(
             value = "/sellers/{sellerId}/orders",
             produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<Collection<Order>> getOrdersForSeller(
+    public ResponseEntity<Collection<OrderDto>> getOrdersForSeller(
             @PathVariable(name = "sellerId") final String sellerId) {
-        return new ResponseEntity<>(sellerService.getOrdersForSeller(sellerId), HttpStatus.OK);
+        final Collection<Order> orders = sellerService.getOrdersForSeller(sellerId);
+        return new ResponseEntity<>(OrderAdapter.adaptCollection(orders), HttpStatus.OK);
     }
 
     @PostMapping(
             value = "/get_seller_list",
             consumes = APPLICATION_JSON_VALUE,
             produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<Collection<SellerEntity>> getSellersBasedOnFilters(
+    public ResponseEntity<Collection<SellerDto>> getSellersBasedOnFilters(
             @RequestBody final SellerEntity filters) {
-        return new ResponseEntity<>(sellerService.getSellersBasedOnFilters(filters), HttpStatus.OK);
+        final Collection<SellerEntity> sellers = sellerService.getSellersBasedOnFilters(filters);
+        return new ResponseEntity<>(SellerAdapter.adaptCollection(sellers), HttpStatus.OK);
     }
 
     @PostMapping(
             value = {"/sellers", "/post_seller"},
             consumes = APPLICATION_JSON_VALUE,
             produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> createSeller(@RequestBody SellerEntity sellerEntity) {
+    public ResponseEntity<SellerDto> createSeller(
+            @RequestBody @Valid SellerDto sellerDto) {
+        final SellerEntity sellerEntity = SellerAdapter.adaptForCreation(sellerDto);
         sellerService.createSeller(sellerEntity);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(SellerAdapter.adaptToDto(sellerEntity), HttpStatus.OK);
     }
 
     @GetMapping(
             value = "/get_plans",
             produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<Collection<Plan>> getSellerPlans(
-            @RequestParam(value = "id") String id) {
-        return new ResponseEntity<>(sellerService.getSellerPlans(id), HttpStatus.OK);
+    public ResponseEntity<Collection<PlanDto>> getSellerPlans(
+            @RequestParam(value = "id") String id) {//getPlans is same
+        final Collection<Plan> plans = sellerService.getSellerPlans(id);
+        return new ResponseEntity<>(PlanAdapter.adaptCollection(plans), HttpStatus.OK);
     }
 
     @GetMapping(
             value = "/sellers/{sellerId}/plans",
             produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<Collection<Plan>> getPlans(
-            @PathVariable(name = "sellerId") final String sellerId) {
-        return new ResponseEntity<>(sellerService.getSellerPlans(sellerId), HttpStatus.OK);
+    public ResponseEntity<Collection<PlanDto>> getPlans(
+            @PathVariable(name = "sellerId") final String sellerId) {//getSellerPlans is same
+        final Collection<Plan> plans = sellerService.getSellerPlans(sellerId);
+        return new ResponseEntity<>(PlanAdapter.adaptCollection(plans), HttpStatus.OK);
     }
 
     @PostMapping(value = "/sellers/{sellerId}/plans",
             consumes = APPLICATION_JSON_VALUE,
             produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<Plan> createPlan(
+    public ResponseEntity<PlanDto> createPlan(
             @PathVariable(name = "sellerId") final String sellerId,
-            @RequestBody final Plan plan) {
-        sellerService.createSellerPlan(sellerId, plan);
-        return new ResponseEntity<>(plan, HttpStatus.OK);
+            @RequestBody @Valid final PlanDto plan) {
+        final Plan planCreated = adaptForCreation(plan);
+        sellerService.createSellerPlan(sellerId, planCreated);
+        return new ResponseEntity<>(adaptToDto(planCreated), HttpStatus.OK);
     }
 }

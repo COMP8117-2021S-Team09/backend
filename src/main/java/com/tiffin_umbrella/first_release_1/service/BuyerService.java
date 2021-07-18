@@ -1,8 +1,9 @@
 package com.tiffin_umbrella.first_release_1.service;
 
+import com.tiffin_umbrella.first_release_1.adapter.BuyerAdapter;
 import com.tiffin_umbrella.first_release_1.common.BadRequestException;
 import com.tiffin_umbrella.first_release_1.common.ErrorCode;
-import com.tiffin_umbrella.first_release_1.dto.Buyer;
+import com.tiffin_umbrella.first_release_1.dto.BuyerDto;
 import com.tiffin_umbrella.first_release_1.entity.BuyerEntity;
 import com.tiffin_umbrella.first_release_1.entity.Order;
 import com.tiffin_umbrella.first_release_1.entity.Plan;
@@ -26,12 +27,9 @@ public class BuyerService {
     private final OrderRepository orderRepository;
     private final MailSenderService mailSenderService;
 
-    public void createBuyer(final Buyer buyer) {
+    public void createBuyer(final BuyerDto buyer) {
         final BuyerEntity existingBuyer = buyerRepository.findByContact_Email(buyer.getContact().getEmail())
-                .orElse(BuyerEntity.builder()
-                        .firstName(buyer.getFirstName())
-                        .lastName(buyer.getLastName())
-                        .contact(buyer.getContact()).build());
+                .orElse(BuyerAdapter.adaptForCreation(buyer));
         buyerRepository.save(existingBuyer);/* will save if not exists already */
         final SellerEntity existingSeller = sellerRepository.findById(buyer.getSeller_id())
                 .orElseThrow(() -> new BadRequestException(ErrorCode.SELLER_NOT_FOUND_BY_ID, buyer.getSeller_id()));
@@ -54,7 +52,7 @@ public class BuyerService {
                 "Seller Name :" + seller.getName() + "\n" +
                 "Plan Name: " + plan.getName() + "\n" +
                 "Plan Description" + plan.getDescription() + "\n" +
-                "Plan Type: " + plan.getType() + "\n" +
+                "Plan PlanType: " + plan.getType() + "\n" +
                 "Contact Seller at this number for further assistance : " +
                 seller.getContact().getPhone() + "\n" +
                 "Enjoy your meal" + "\n" +
