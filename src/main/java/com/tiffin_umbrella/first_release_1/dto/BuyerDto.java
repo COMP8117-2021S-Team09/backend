@@ -3,6 +3,7 @@ package com.tiffin_umbrella.first_release_1.dto;
 import lombok.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 @AllArgsConstructor
@@ -15,7 +16,10 @@ public class BuyerDto {
     private String firstName;
     private String lastName;
 
+    @NotEmpty(message = "order plan_id cannot be empty")
     private String plan_id;
+
+    @NotEmpty(message = "order seller_id cannot be empty")
     private String seller_id;
 
     @Valid
