@@ -1,5 +1,7 @@
 package com.tiffin_umbrella.first_release_1.service;
 
+import com.tiffin_umbrella.first_release_1.common.BadRequestException;
+import com.tiffin_umbrella.first_release_1.common.ErrorCode;
 import com.tiffin_umbrella.first_release_1.entity.*;
 import com.tiffin_umbrella.first_release_1.repository.OrderRepository;
 import com.tiffin_umbrella.first_release_1.repository.PlanRepository;
@@ -11,6 +13,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static com.tiffin_umbrella.first_release_1.common.BadRequestException.throwException;
 
 @Service
 @RequiredArgsConstructor(onConstructor = @__({@Autowired, @Lazy}))
@@ -41,6 +45,8 @@ public class SellerService {
     }
 
     public void createSeller(final SellerEntity sellerEntity) {
+        sellerRepository.findByContact_Email(sellerEntity.getContactEmail())
+                .ifPresent(existing -> throwException(ErrorCode.SELLER_ALREADY_EXISTS_BY_EMAIL));
         planRepository.saveAll(sellerEntity.getPlans());
         sellerRepository.save(sellerEntity);
         mailSenderService.sendRegisterEmail(sellerEntity.getContact().getEmail());

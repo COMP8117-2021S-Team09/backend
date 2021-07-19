@@ -7,7 +7,8 @@ public enum ErrorCode {
 
     /* seller related */
     SELLER_NOT_FOUND_BY_ID,
+    SELLER_ALREADY_EXISTS_BY_EMAIL,
 
     /* plan related */
     PLAN_NOT_FOUND_BY_ID
-    }
+}
