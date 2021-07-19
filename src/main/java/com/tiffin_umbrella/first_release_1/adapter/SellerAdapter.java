@@ -35,6 +35,21 @@ public class SellerAdapter {
                 .build();
     }
 
+    public static SellerEntity adaptForSearch(final SellerDto dto) {
+        Assert.notNull(dto, ErrorMessage.VALIDATION_INVALID_INPUT_EMPTY);
+        return SellerEntity.builder()
+                .name(dto.getName())
+                .description(dto.getDescription())
+                .status(dto.getStatus())
+                .categories(dto.getCategories())
+                .cuisines(dto.getCuisines())
+                .averagePricePerPerson(dto.getAveragePricePerPerson())
+                .paymentMethodsAvailable(dto.getPaymentMethodsAvailable())
+                .imageUrl(dto.getImageUrl())
+                .vaccine(adaptVaccine(dto.getVaccine()))
+                .build();
+    }
+
     public static Collection<SellerDto> adaptCollection(Collection<SellerEntity> entities) {
         return Optional.ofNullable(entities).orElse(Collections.emptyList()).stream()
                 .map(SellerAdapter::adaptToDto)

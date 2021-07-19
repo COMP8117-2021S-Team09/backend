@@ -55,7 +55,7 @@ public class SellerController {
             produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<SellerDto>> getSellersBasedOnFilters(
             @RequestBody final SellerDto filters) {
-        final SellerEntity entityFilters = SellerAdapter.adaptForCreation(filters);
+        final SellerEntity entityFilters = SellerAdapter.adaptForSearch(filters);
         final Collection<SellerEntity> sellers = sellerService.getSellersBasedOnFilters(entityFilters);
         return new ResponseEntity<>(SellerAdapter.adaptCollection(sellers), HttpStatus.OK);
     }
