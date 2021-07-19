@@ -77,7 +77,7 @@ public class SellerAdapter {
     }
 
     private static Collection<ReviewDto> adaptReviews(final Collection<ReviewEntity> reviews) {
-        return reviews.stream()
+        return Optional.ofNullable(reviews).orElse(Collections.emptyList()).stream()
                 .map(review -> ReviewDto.builder()
                         .buyerId(review.getBuyer_id())
                         .comments(review.getComments())
