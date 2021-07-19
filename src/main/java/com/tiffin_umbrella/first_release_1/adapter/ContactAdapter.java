@@ -45,7 +45,8 @@ public class ContactAdapter {
                 .build();
     }
 
-    private static AddressEntity adaptAddress(final AddressDto dto) {
+    private static AddressEntity adaptAddress(final AddressDto address) {
+        final AddressDto dto = Optional.ofNullable(address).orElse(new AddressDto());
         return AddressEntity.builder()
                 .latitude(dto.getLatitude())
                 .longitude(dto.getLongitude())
