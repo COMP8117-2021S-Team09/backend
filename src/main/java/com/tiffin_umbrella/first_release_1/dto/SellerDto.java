@@ -2,15 +2,11 @@ package com.tiffin_umbrella.first_release_1.dto;
 
 import com.tiffin_umbrella.first_release_1.entity.*;
 import lombok.*;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
-import org.springframework.data.mongodb.core.mapping.FieldType;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 
 @AllArgsConstructor
@@ -34,10 +30,13 @@ public class SellerDto {
     private Set<PaymentMethods> paymentMethodsAvailable;
 
     private Collection<PlanDto> plans;
-    private ContactDto contact;
     private String password;
     private String otp;
     private VaccineDto vaccine;
     private Collection<ReviewDto> reviews;
     private Collection<AuditDto> audits;
+
+    @Valid
+    @NotNull(message = "seller contact cannot be empty")
+    private ContactDto contact;
 }
