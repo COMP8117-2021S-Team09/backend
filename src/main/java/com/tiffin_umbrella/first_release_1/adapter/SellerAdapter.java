@@ -88,7 +88,7 @@ public class SellerAdapter {
     }
 
     private static Collection<AuditDto> adaptAudits(final Collection<AuditEntity> audits) {
-        return audits.stream()
+        return Optional.ofNullable(audits).orElse(Collections.emptyList()).stream()
                 .map(audit -> AuditDto.builder()
                         .adminId(audit.getAdmin_id())
                         .sellerId(audit.getSeller_id())
