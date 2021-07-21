@@ -1,6 +1,7 @@
 package com.tiffin_umbrella.first_release_1.entity;
 
 import lombok.*;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
 @NoArgsConstructor
@@ -9,7 +10,8 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-public class Review {
+@Document("review")
+public class ReviewEntity {
     String seller_id;
     String buyer_id;
     String plan_id;

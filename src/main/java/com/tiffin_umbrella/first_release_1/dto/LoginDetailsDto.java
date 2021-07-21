@@ -1,5 +1,6 @@
-package com.tiffin_umbrella.first_release_1.Presentation_Layer;
+package com.tiffin_umbrella.first_release_1.dto;
 
+import com.tiffin_umbrella.first_release_1.entity.Role;
 import lombok.*;
 
 import javax.validation.constraints.NotEmpty;

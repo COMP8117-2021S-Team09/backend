@@ -13,5 +13,5 @@ public class BuyerEntity{
      private String id;
      String firstName;
      String lastName;
-     Contact_User contact;
+     ContactEntity contact;
 }

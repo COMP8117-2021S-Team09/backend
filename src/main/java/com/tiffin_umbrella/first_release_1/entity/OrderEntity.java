@@ -12,7 +12,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Setter
 @Builder
 @Data
-public class Order {
+public class OrderEntity {
     @Id
     private String id;
     @DBRef
@@ -20,5 +20,5 @@ public class Order {
     @DBRef
     BuyerEntity buyer;
     @DBRef
-    Plan plan;
+    PlanEntity plan;
 }
