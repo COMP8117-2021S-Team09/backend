@@ -20,6 +20,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.net.URL;
 import java.util.Collection;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -52,9 +53,15 @@ public class ImageService {
     }
 
     public byte[] getImageByteArray(final String imageId) {
-        final ImageEntity imageById = imageRepository.findById(imageId)
-                .orElseThrow(() -> new BadRequestException(ErrorCode.IMAGE_NOT_FOUND_BY_ID, imageId));
-        return imageById.getImageBinary().getData();
+        byte[] imageData;
+        final Optional<ImageEntity> imageById = imageRepository.findById(imageId);
+        if (imageById.isPresent()) {
+            imageData = imageById.get().getImageBinary().getData();
+        } else {/* get random image if image not found by imageId */
+            final int averageAllowedFileDimension = MAX_FILE_ALLOWED_DIMENSION / 2;
+            imageData = getRandomImageForSize(averageAllowedFileDimension);
+        }
+        return imageData;
     }
 
     public byte[] getRandomImageForSize(final Integer size) {
@@ -75,7 +82,7 @@ public class ImageService {
 
     private void validateImageSize(final Integer size) {
         final String allowedRange = MIN_FILE_ALLOWED_DIMENSION + "-" + MAX_FILE_ALLOWED_DIMENSION;
-        if (size < MIN_FILE_ALLOWED_DIMENSION || size > MAX_FILE_UPLOAD_SIZE_ALLOWED_IN_MB) {
+        if (size < MIN_FILE_ALLOWED_DIMENSION || size > MAX_FILE_ALLOWED_DIMENSION) {
             BadRequestException.throwException(ErrorCode.IMAGE_SIZE_EXCEEDS_ALLOWED_DIMENSIONS, allowedRange);
         }
     }
