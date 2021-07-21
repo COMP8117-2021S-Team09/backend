@@ -16,8 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Collection;
 
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
-import static org.springframework.http.MediaType.IMAGE_JPEG_VALUE;
+import static org.springframework.http.MediaType.*;
 
 @CrossOrigin
 @RestController
@@ -27,6 +26,7 @@ public class ImageController {
     private final ImageService imageService;
 
     @PostMapping(value = "/images",
+            consumes = MULTIPART_FORM_DATA_VALUE,
             produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<ImageDto> create(
             @RequestPart(name = "image") final MultipartFile image,
