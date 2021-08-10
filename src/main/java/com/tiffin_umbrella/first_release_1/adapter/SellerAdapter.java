@@ -6,9 +6,8 @@ import com.tiffin_umbrella.first_release_1.entity.*;
 import lombok.NoArgsConstructor;
 import org.springframework.util.Assert;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 import static lombok.AccessLevel.PRIVATE;
@@ -58,7 +57,7 @@ public class SellerAdapter {
 
     public static SellerDto adaptToDto(final SellerEntity entity) {
         Assert.notNull(entity, ErrorMessage.VALIDATION_INVALID_INPUT_EMPTY);
-        return SellerDto.builder()
+        final SellerDto seller = SellerDto.builder()
                 .id(entity.getId())
                 .name(entity.getName())
                 .description(entity.getDescription())
@@ -74,6 +73,34 @@ public class SellerAdapter {
                 .reviews(adaptReviews(entity.getReviews()))
                 .contact(ContactAdapter.adaptContact(entity.getContact()))
                 .build();
+        return addDynamicDetails(seller, entity);
+    }
+
+    private static SellerDto addDynamicDetails(final SellerDto dto, final SellerEntity entity) {
+        dto.setAveragePricePerPerson(calculateAveragePricePerson(entity));
+        dto.setCategories(calculateCategories(entity));
+        dto.setCuisines(calculateCuisines(entity));
+        return dto;
+    }
+
+    private static Set<Cuisines> calculateCuisines(final SellerEntity seller) {
+        return seller.getPlans().stream()
+                .map(PlanEntity::getCuisine)
+                .collect(Collectors.toSet());
+    }
+
+    private static Set<Categories> calculateCategories(final SellerEntity seller) {
+        return seller.getPlans().stream()
+                .map(PlanEntity::getCategory)
+                .collect(Collectors.toSet());
+    }
+
+    private static double calculateAveragePricePerson(final SellerEntity seller) {
+        final AtomicReference<Double> averagePricePerson = new AtomicReference<>((double) 0);
+        seller.getPlans().forEach(plan -> {
+            averagePricePerson.getAndSet(plan.getPlanPricePerDay());
+        });//todo: to be updated with business logic
+        return averagePricePerson.get();
     }
 
     private static Collection<ReviewDto> adaptReviews(final Collection<ReviewEntity> reviews) {

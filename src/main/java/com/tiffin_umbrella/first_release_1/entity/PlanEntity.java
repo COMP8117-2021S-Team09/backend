@@ -6,7 +6,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.data.mongodb.core.mapping.FieldType;
 
-@Document(value="plan")
+@Document(value = "plan")
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -26,4 +26,23 @@ public class PlanEntity {
     String videoUrl;
     String modelUrl;
 
+    @Field(value = "cuisine", targetType = FieldType.STRING)
+    Cuisines cuisine;
+    @Field(value = "category", targetType = FieldType.STRING)
+    Categories category;
+
+    public double getPlanPricePerDay() {
+        int planTypeTime;
+        switch (type) {
+            case WEEKLY:
+                planTypeTime = 7;
+                break;
+            case MONTHLY:
+                planTypeTime = 30;
+                break;
+            default:
+                planTypeTime = 1;
+        }
+        return price / planTypeTime;
+    }
 }
