@@ -6,6 +6,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.data.mongodb.core.mapping.FieldType;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -54,5 +55,13 @@ public class SellerEntity {
 
     public String getContactEmail() {
         return contact == null ? "" : contact.getEmail();
+    }
+
+    public Set<Categories> getCategories() {
+        return Optional.ofNullable(categories).orElse(Collections.emptySet());
+    }
+
+    public Set<Cuisines> getCuisines() {
+        return Optional.ofNullable(cuisines).orElse(Collections.emptySet());
     }
 }

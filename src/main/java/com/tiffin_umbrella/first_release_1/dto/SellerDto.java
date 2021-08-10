@@ -7,6 +7,8 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Optional;
 import java.util.Set;
 
 @AllArgsConstructor
@@ -39,4 +41,12 @@ public class SellerDto {
     @Valid
     @NotNull(message = "seller contact cannot be empty")
     private ContactDto contact;
+
+    public Set<Categories> getCategories() {
+        return Optional.ofNullable(categories).orElse(Collections.emptySet());
+    }
+
+    public Set<Cuisines> getCuisines() {
+        return Optional.ofNullable(cuisines).orElse(Collections.emptySet());
+    }
 }
