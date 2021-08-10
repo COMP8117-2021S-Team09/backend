@@ -101,7 +101,7 @@ public class SellerAdapter {
         final double totalPlanPricePerDay = seller.getPlans().stream()
                 .flatMapToDouble(planEntity -> DoubleStream.of(planEntity.getPlanPricePerDay()))
                 .sum();
-        return totalPlanPricePerDay / numberOfPlans;
+        return roundOff(totalPlanPricePerDay / numberOfPlans);
     }
 
     private static Collection<ReviewDto> adaptReviews(final Collection<ReviewEntity> reviews) {
@@ -146,5 +146,9 @@ public class SellerAdapter {
                 .dose2Date(dto.getDose2Date())
                 .dose2Url(dto.getDose2Url())
                 .build();
+    }
+
+    private static Double roundOff(final Double value) {
+        return Math.round(value * 100D) / 100D;
     }
 }
