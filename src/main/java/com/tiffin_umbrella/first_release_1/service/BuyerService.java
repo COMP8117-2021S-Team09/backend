@@ -40,20 +40,24 @@ public class BuyerService {
                 .seller(existingSeller)
                 .plan(existingPlan).build();
         orderRepository.save(order);
-        final String summary = getSummary(existingBuyer, existingSeller, existingPlan);
+        final String summary = getSummary(existingBuyer, existingSeller, existingPlan, order);
         mailSenderService.sendRegisterEmail(existingBuyer.getContact().getEmail());
         mailSenderService.sendSummaryEmail(existingBuyer.getContact().getEmail(), summary);
     }
 
-    private String getSummary(final BuyerEntity buyer, final SellerEntity seller, final PlanEntity plan) {
+    private String getSummary(final BuyerEntity buyer,
+                              final SellerEntity seller,
+                              final PlanEntity plan,
+                              final OrderEntity order) {
         return "Hello " + buyer.getFirstName() + " " + buyer.getLastName() + "\n" +
-                "We have recieved your tiffin order \n" +
+                "We have received your tiffin order \n" +
                 "Order Details\n" +
-                "Seller Name :" + seller.getName() + "\n" +
+                "Order ID: " + order.getId() + "\n" +
+                "Seller Name: " + seller.getName() + "\n" +
                 "Plan Name: " + plan.getName() + "\n" +
-                "Plan Description" + plan.getDescription() + "\n" +
-                "Plan PlanType: " + plan.getType() + "\n" +
-                "ContactEntity Seller at this number for further assistance : " +
+                "Plan Description: " + plan.getDescription() + "\n" +
+                "Plan type: " + plan.getType() + "\n" +
+                "Contact Seller at this number for further assistance : " +
                 seller.getContact().getPhone() + "\n" +
                 "Enjoy your meal" + "\n" +
                 "Thanks," + "\n" +
