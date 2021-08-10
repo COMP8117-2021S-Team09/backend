@@ -1,5 +1,7 @@
 package com.tiffin_umbrella.first_release_1.dto;
 
+import com.tiffin_umbrella.first_release_1.entity.Categories;
+import com.tiffin_umbrella.first_release_1.entity.Cuisines;
 import com.tiffin_umbrella.first_release_1.entity.PlanStatus;
 import com.tiffin_umbrella.first_release_1.entity.PlanType;
 import lombok.*;
@@ -20,6 +22,8 @@ public class PlanDto {
     private Double price;
     private PlanType type;
     private PlanStatus status;
+    private Cuisines cuisine;
+    private Categories category;
 
     @NotEmpty(message = "plan imageUrl cannot be empty")
     private String imageUrl;
