@@ -150,10 +150,9 @@ class SellerServiceTest {
         doReturn(sellers).when(sellerRepository).findAll();
         Collection<SellerEntity>sellerList = sellerService.findAll();
         Assertions.assertEquals(2,sellerList.size(),"find all should return 2 sellers");
-        Assertions.assertSame(sellers.toArray()[0],s1,"First Seller returned false");
-        Assertions.assertEquals(sellers.toArray()[1],s2,"Second Seller returned false");
+        Assertions.assertSame(sellerList.toArray()[0],s1,"First Seller returned true");
+        Assertions.assertSame(sellerList.toArray()[1],s2,"Second Seller returned ture");
        }
-
     @Test
     void getOrdersForSeller() {
         
