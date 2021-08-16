@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.DoubleStream;
 
 import static com.tiffin_umbrella.first_release_1.common.BadRequestException.throwException;
 
@@ -64,7 +65,18 @@ public class SellerService {
             plan.setStatus(PlanStatus.AVAILABLE);
             planRepository.save(plan);
             seller.getPlans().add(plan);
+            updatePlanStatsForSeller(seller, plan);
             sellerRepository.save(seller);
         });
+    }
+
+    private void updatePlanStatsForSeller(final SellerEntity seller, final PlanEntity plan) {
+        seller.getCategories().add(plan.getCategory());
+        seller.getCuisines().add(plan.getCuisine());
+        final int numberOfPlans = seller.getPlans().size();
+        final double totalPlanPricePerDay = seller.getPlans().stream()
+                .flatMapToDouble(planEntity -> DoubleStream.of(planEntity.getPlanPricePerDay()))
+                .sum();
+        seller.setAveragePricePerPerson(totalPlanPricePerDay / numberOfPlans);
     }
 }

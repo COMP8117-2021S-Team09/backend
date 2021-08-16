@@ -6,10 +6,10 @@ import com.tiffin_umbrella.first_release_1.entity.*;
 import lombok.NoArgsConstructor;
 import org.springframework.util.Assert;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
+import java.util.stream.DoubleStream;
 
 import static lombok.AccessLevel.PRIVATE;
 
@@ -58,7 +58,7 @@ public class SellerAdapter {
 
     public static SellerDto adaptToDto(final SellerEntity entity) {
         Assert.notNull(entity, ErrorMessage.VALIDATION_INVALID_INPUT_EMPTY);
-        return SellerDto.builder()
+        final SellerDto seller = SellerDto.builder()
                 .id(entity.getId())
                 .name(entity.getName())
                 .description(entity.getDescription())
@@ -74,6 +74,34 @@ public class SellerAdapter {
                 .reviews(adaptReviews(entity.getReviews()))
                 .contact(ContactAdapter.adaptContact(entity.getContact()))
                 .build();
+        return addDynamicDetails(seller, entity);
+    }
+
+    private static SellerDto addDynamicDetails(final SellerDto dto, final SellerEntity entity) {
+        dto.setAveragePricePerPerson(calculateAveragePricePerson(entity));
+        dto.getCategories().addAll(calculateCategories(entity));
+        dto.getCuisines().addAll(calculateCuisines(entity));
+        return dto;
+    }
+
+    private static Set<Cuisines> calculateCuisines(final SellerEntity seller) {
+        return seller.getPlans().stream()
+                .map(PlanEntity::getCuisine).filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+    }
+
+    private static Set<Categories> calculateCategories(final SellerEntity seller) {
+        return seller.getPlans().stream()
+                .map(PlanEntity::getCategory).filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+    }
+
+    private static double calculateAveragePricePerson(final SellerEntity seller) {
+        final int numberOfPlans = seller.getPlans().size();
+        final double totalPlanPricePerDay = seller.getPlans().stream()
+                .flatMapToDouble(planEntity -> DoubleStream.of(planEntity.getPlanPricePerDay()))
+                .sum();
+        return roundOff(totalPlanPricePerDay / numberOfPlans);
     }
 
     private static Collection<ReviewDto> adaptReviews(final Collection<ReviewEntity> reviews) {
@@ -118,5 +146,9 @@ public class SellerAdapter {
                 .dose2Date(dto.getDose2Date())
                 .dose2Url(dto.getDose2Url())
                 .build();
+    }
+
+    private static Double roundOff(final Double value) {
+        return Math.round(value * 100D) / 100D;
     }
 }
