@@ -36,7 +36,7 @@ public class SellerController {
     @GetMapping(
             value = {"/sellers", "/get_seller_list"},
             produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<Collection<SellerDto>> getAllSellers() {
+        public ResponseEntity<Collection<SellerDto>> getAllSellers() {
         return new ResponseEntity<>(adaptCollection(sellerService.findAll()), HttpStatus.OK);
     }
 
