@@ -26,3 +26,4 @@ http request -> controller -> service -> repository -> return to parent callers 
 2. Make sure you have java installed with version 8 (preferable) - check version `java -version`
 3. Run the `java -jar first_release_1-0.0.1-SNAPSHOT.jar` command where you have kept the JAR (assuming you are in home location and have not changed the JAR name)
 4. Open the link http://localhost:8080/ and the API docs should open up where you can try out the APIs
+5. If there is already some process running on port 8080, you can switch it by command `java -jar first_release_1-0.0.1-SNAPSHOT.jar --server.port=8091` to start the same JAR on 8091 instead of default 8080 port
