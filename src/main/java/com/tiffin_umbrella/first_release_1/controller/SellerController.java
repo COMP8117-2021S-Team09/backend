@@ -67,10 +67,18 @@ public class SellerController {
             produces = APPLICATION_JSON_VALUE)
     @SneakyThrows
     public ResponseEntity<Object> createSeller(
-            @RequestBody  Object sellerDto) {
+            @RequestBody Object sellerDto) {
 //        final SellerEntity sellerEntity = SellerAdapter.adaptForCreation(sellerDto);
         sellerService.createSeller(sellerDto);
         return new ResponseEntity<>(sellerDto, HttpStatus.OK);
+    }
+
+    @GetMapping(
+            value = "/sellers/{id}/fb",
+            produces = APPLICATION_JSON_VALUE)
+    @SneakyThrows
+    public ResponseEntity<Object> getFB(@PathVariable String id) {
+        return new ResponseEntity<>(sellerService.getObject(id), HttpStatus.OK);
     }
 
     @GetMapping(

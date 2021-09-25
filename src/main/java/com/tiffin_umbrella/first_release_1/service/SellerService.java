@@ -1,6 +1,8 @@
 package com.tiffin_umbrella.first_release_1.service;
 
 import com.google.api.core.ApiFuture;
+import com.google.cloud.firestore.DocumentReference;
+import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.WriteResult;
 import com.google.firebase.cloud.FirestoreClient;
@@ -12,6 +14,7 @@ import com.tiffin_umbrella.first_release_1.repository.OrderRepository;
 import com.tiffin_umbrella.first_release_1.repository.PlanRepository;
 import com.tiffin_umbrella.first_release_1.repository.SellerRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -98,5 +101,17 @@ public class SellerService {
                 .document(UUID.randomUUID().toString()).set(sellerDto);
         log.info("apiFuture {}", apiFuture);
         log.info("time: {}", apiFuture.get().getUpdateTime().toString());
+    }
+
+    @SneakyThrows
+    public Object getObject(final String doc_id) {
+        Firestore firestore = FirestoreClient.getFirestore();
+        DocumentReference documentReference = firestore.collection("crud_user").document(doc_id);
+        ApiFuture<DocumentSnapshot> apiFuture = documentReference.get();
+        DocumentSnapshot documentSnapshot = apiFuture.get();
+        if (documentSnapshot.exists()) {
+            return documentSnapshot.toObject(Object.class);
+        }
+        return null;
     }
 }
