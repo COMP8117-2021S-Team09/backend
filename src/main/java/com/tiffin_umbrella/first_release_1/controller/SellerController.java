@@ -3,6 +3,7 @@ package com.tiffin_umbrella.first_release_1.controller;
 import com.tiffin_umbrella.first_release_1.adapter.OrderAdapter;
 import com.tiffin_umbrella.first_release_1.adapter.PlanAdapter;
 import com.tiffin_umbrella.first_release_1.adapter.SellerAdapter;
+import com.tiffin_umbrella.first_release_1.dto.AddressDto;
 import com.tiffin_umbrella.first_release_1.dto.OrderDto;
 import com.tiffin_umbrella.first_release_1.dto.PlanDto;
 import com.tiffin_umbrella.first_release_1.dto.SellerDto;
@@ -79,6 +80,16 @@ public class SellerController {
     @SneakyThrows
     public ResponseEntity<Object> getFB(@PathVariable String id) {
         return new ResponseEntity<>(sellerService.getObject(id), HttpStatus.OK);
+    }
+
+    @PutMapping(
+            value = "/sellers/{id}/fb",
+            consumes = APPLICATION_JSON_VALUE,
+            produces = APPLICATION_JSON_VALUE)
+    @SneakyThrows
+    public ResponseEntity<Object> updateFB(@PathVariable String id,
+                                           @RequestBody AddressDto address) {
+        return new ResponseEntity<>(sellerService.updateObject(id, address), HttpStatus.OK);
     }
 
     @DeleteMapping(

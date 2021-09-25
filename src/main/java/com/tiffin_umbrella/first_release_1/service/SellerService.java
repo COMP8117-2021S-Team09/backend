@@ -9,6 +9,7 @@ import com.google.firebase.cloud.FirestoreClient;
 import com.google.protobuf.Api;
 import com.tiffin_umbrella.first_release_1.common.BadRequestException;
 import com.tiffin_umbrella.first_release_1.common.ErrorCode;
+import com.tiffin_umbrella.first_release_1.dto.AddressDto;
 import com.tiffin_umbrella.first_release_1.dto.SellerDto;
 import com.tiffin_umbrella.first_release_1.entity.*;
 import com.tiffin_umbrella.first_release_1.repository.OrderRepository;
@@ -21,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
@@ -113,6 +115,20 @@ public class SellerService {
             return documentSnapshot.toObject(Object.class);
         }
         return null;
+    }
+
+    @SneakyThrows
+    public Object updateObject(final String doc_id, final AddressDto address) {
+        Firestore firestore = FirestoreClient.getFirestore();
+        HashMap<String, Object> hm = new HashMap<>();
+        hm.put("state", address.getState());
+        hm.put("lat", address.getLatitude());
+        hm.put("lng", address.getLongitude());
+        hm.put("time", Instant.now());
+        final ApiFuture<WriteResult> updated = firestore
+                .collection("crud_user").document(doc_id).update(hm);
+        log.info("updated : {} with doc_id: {} ", updated, doc_id);
+        return updated;
     }
 
     @SneakyThrows
