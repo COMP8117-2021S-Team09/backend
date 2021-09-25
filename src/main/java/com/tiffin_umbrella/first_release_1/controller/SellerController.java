@@ -81,6 +81,14 @@ public class SellerController {
         return new ResponseEntity<>(sellerService.getObject(id), HttpStatus.OK);
     }
 
+    @DeleteMapping(
+            value = "/sellers/{id}/fb",
+            produces = APPLICATION_JSON_VALUE)
+    @SneakyThrows
+    public ResponseEntity<Object> deleteFB(@PathVariable String id) {
+        return new ResponseEntity<>(sellerService.deleteObject(id), HttpStatus.OK);
+    }
+
     @GetMapping(
             value = "/get_plans",
             produces = APPLICATION_JSON_VALUE)

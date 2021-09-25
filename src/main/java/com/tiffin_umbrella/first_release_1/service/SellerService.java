@@ -6,6 +6,7 @@ import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.WriteResult;
 import com.google.firebase.cloud.FirestoreClient;
+import com.google.protobuf.Api;
 import com.tiffin_umbrella.first_release_1.common.BadRequestException;
 import com.tiffin_umbrella.first_release_1.common.ErrorCode;
 import com.tiffin_umbrella.first_release_1.dto.SellerDto;
@@ -60,7 +61,6 @@ public class SellerService {
         Firestore firestore = FirestoreClient.getFirestore();
         ApiFuture<WriteResult> apiFuture = firestore.collection("crud_user").document(sellerEntity.getName()).set(sellerEntity);
         log.info("apiFuture {}", apiFuture);
-        sellerEntity.setTimeStamp(apiFuture.get().getUpdateTime().toString());
 //        sellerRepository.findByContact_Email(sellerEntity.getContactEmail())
 //                .ifPresent(existing -> throwException(ErrorCode.SELLER_ALREADY_EXISTS_BY_EMAIL));
 //        planRepository.saveAll(sellerEntity.getPlans());
@@ -113,5 +113,13 @@ public class SellerService {
             return documentSnapshot.toObject(Object.class);
         }
         return null;
+    }
+
+    @SneakyThrows
+    public Object deleteObject(final String doc_id) {
+        Firestore firestore = FirestoreClient.getFirestore();
+        ApiFuture<WriteResult> deleted = firestore.collection("crud_user").document(doc_id).delete();
+        log.info("deleted : {} with doc_id: {} ", deleted, doc_id);
+        return deleted;
     }
 }
