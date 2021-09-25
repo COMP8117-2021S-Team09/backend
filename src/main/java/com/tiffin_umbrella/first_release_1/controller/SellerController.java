@@ -9,6 +9,7 @@ import com.tiffin_umbrella.first_release_1.dto.SellerDto;
 import com.tiffin_umbrella.first_release_1.entity.*;
 import com.tiffin_umbrella.first_release_1.service.SellerService;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -64,11 +65,12 @@ public class SellerController {
             value = {"/sellers", "/post_seller"},
             consumes = APPLICATION_JSON_VALUE,
             produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<SellerDto> createSeller(
-            @RequestBody @Valid SellerDto sellerDto) {
-        final SellerEntity sellerEntity = SellerAdapter.adaptForCreation(sellerDto);
-        sellerService.createSeller(sellerEntity);
-        return new ResponseEntity<>(SellerAdapter.adaptToDto(sellerEntity), HttpStatus.OK);
+    @SneakyThrows
+    public ResponseEntity<Object> createSeller(
+            @RequestBody  Object sellerDto) {
+//        final SellerEntity sellerEntity = SellerAdapter.adaptForCreation(sellerDto);
+        sellerService.createSeller(sellerDto);
+        return new ResponseEntity<>(sellerDto, HttpStatus.OK);
     }
 
     @GetMapping(

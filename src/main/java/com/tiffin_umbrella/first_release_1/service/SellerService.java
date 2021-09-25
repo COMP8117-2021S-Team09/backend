@@ -1,23 +1,31 @@
 package com.tiffin_umbrella.first_release_1.service;
 
+import com.google.api.core.ApiFuture;
+import com.google.cloud.firestore.Firestore;
+import com.google.cloud.firestore.WriteResult;
+import com.google.firebase.cloud.FirestoreClient;
 import com.tiffin_umbrella.first_release_1.common.BadRequestException;
 import com.tiffin_umbrella.first_release_1.common.ErrorCode;
+import com.tiffin_umbrella.first_release_1.dto.SellerDto;
 import com.tiffin_umbrella.first_release_1.entity.*;
 import com.tiffin_umbrella.first_release_1.repository.OrderRepository;
 import com.tiffin_umbrella.first_release_1.repository.PlanRepository;
 import com.tiffin_umbrella.first_release_1.repository.SellerRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
 
 import static com.tiffin_umbrella.first_release_1.common.BadRequestException.throwException;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor(onConstructor = @__({@Autowired, @Lazy}))
 public class SellerService {
 
@@ -45,12 +53,16 @@ public class SellerService {
                 .collect(Collectors.toList());
     }
 
-    public void createSeller(final SellerEntity sellerEntity) {
-        sellerRepository.findByContact_Email(sellerEntity.getContactEmail())
-                .ifPresent(existing -> throwException(ErrorCode.SELLER_ALREADY_EXISTS_BY_EMAIL));
-        planRepository.saveAll(sellerEntity.getPlans());
-        sellerRepository.save(sellerEntity);
-        mailSenderService.sendRegisterEmail(sellerEntity.getContact().getEmail());
+    public void createSeller(final SellerEntity sellerEntity) throws ExecutionException, InterruptedException {
+        Firestore firestore = FirestoreClient.getFirestore();
+        ApiFuture<WriteResult> apiFuture = firestore.collection("crud_user").document(sellerEntity.getName()).set(sellerEntity);
+        log.info("apiFuture {}", apiFuture);
+        sellerEntity.setTimeStamp(apiFuture.get().getUpdateTime().toString());
+//        sellerRepository.findByContact_Email(sellerEntity.getContactEmail())
+//                .ifPresent(existing -> throwException(ErrorCode.SELLER_ALREADY_EXISTS_BY_EMAIL));
+//        planRepository.saveAll(sellerEntity.getPlans());
+//        sellerRepository.save(sellerEntity);
+//        mailSenderService.sendRegisterEmail(sellerEntity.getContact().getEmail());
     }
 
     public Collection<PlanEntity> getSellerPlans(final String sellerId) {
@@ -78,5 +90,13 @@ public class SellerService {
                 .flatMapToDouble(planEntity -> DoubleStream.of(planEntity.getPlanPricePerDay()))
                 .sum();
         seller.setAveragePricePerPerson(totalPlanPricePerDay / numberOfPlans);
+    }
+
+    public void createSeller(final Object sellerDto) throws ExecutionException, InterruptedException {
+        Firestore firestore = FirestoreClient.getFirestore();
+        ApiFuture<WriteResult> apiFuture = firestore.collection("crud_user")
+                .document(UUID.randomUUID().toString()).set(sellerDto);
+        log.info("apiFuture {}", apiFuture);
+        log.info("time: {}", apiFuture.get().getUpdateTime().toString());
     }
 }
